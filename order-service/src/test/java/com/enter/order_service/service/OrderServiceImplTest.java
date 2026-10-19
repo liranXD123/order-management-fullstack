@@ -76,4 +76,18 @@ class OrderServiceImplTest {
         
         assertEquals("Order not found", exception.getMessage());
     }
+
+    @Test
+    void getOrder_WhenOrderExists_ShouldReturnOrderDto() {
+        Long orderId = 1L;
+        Order existingOrder = Order.builder().id(orderId).quantity(2).productId("LAPTOP-X1").status(OrderStatus.CONFIRMED).build();
+        OrderResponseDto dto = OrderResponseDto.builder().id(orderId).productId("LAPTOP-X1").quantity(2).build();
+        when(orderDal.findById(orderId)).thenReturn(Optional.of(existingOrder));
+        when(orderMapper.toResponseDto(existingOrder)).thenReturn(dto);
+
+        OrderResponseDto result = orderService.getOrder(orderId);
+        assertNotNull(result);
+        assertEquals(existingOrder.getId(), result.getId());
+        verify(orderDal, times(1)).findById(orderId);
+    }
 }

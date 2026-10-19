@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 /**
@@ -60,4 +61,16 @@ class InventoryServiceImplTest {
         // Verify that save was NEVER called
         verify(inventoryDal, never()).save(any());
     }
+
+    @Test
+    void checkAndReserveInventory_WhenStockIsSufficient_ShouldReturnTrue() {
+        String productId = "LAPTOP-X1";
+        Inventory existingInventory = Inventory.builder().id(1L).productId(productId).quantity(10).build();
+        when(inventoryDal.findByProductId(productId)).thenReturn(Optional.of(existingInventory));
+        boolean result = inventoryService.checkAndReserveInventory(productId, 10);
+        assertTrue(result);
+        assertEquals(0, existingInventory.getQuantity());
+        verify(inventoryDal, times(1)).save(existingInventory);
+    }
+
 }

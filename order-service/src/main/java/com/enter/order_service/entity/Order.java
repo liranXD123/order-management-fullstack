@@ -30,4 +30,9 @@ public class Order {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status; // The current status of the order (e.g., PENDING_INVENTORY)
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id")
+    Customer customer;
+
 }
