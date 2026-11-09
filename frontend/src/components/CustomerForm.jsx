@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-function CustomerForm(){
+function CustomerForm({onCustomerCreated}){
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     console.log("Current name:", name);
@@ -18,7 +18,7 @@ function CustomerForm(){
             });
             if(response.ok){
                 const data = await response.json();
-                console.log("Success from Spring Boot:", data);
+                onCustomerCreated(data);
                 alert("Customer created with ID: " + data.customerId);
                 setName("");
                 setEmail("");
